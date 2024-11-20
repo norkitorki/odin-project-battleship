@@ -24,6 +24,35 @@ describe('gameboardDisplay', () => {
     expect(display.locked).toBe(false);
   });
 
+  test('should be traversible by keyboard arrow keys', () => {
+    const display = GameboardDisplay(10, 10, { keyboardTraverse: true });
+    display.renderBoard();
+    const gameBoard = document.querySelector('.gameboard');
+    gameBoard.querySelector('[data-field="44"]').focus();
+
+    const dispatchKeyboardEvent = (key) => {
+      const event = new KeyboardEvent('keydown', { key });
+      gameBoard.dispatchEvent(event);
+    };
+
+    dispatchKeyboardEvent('ArrowLeft');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="43"]')
+    );
+    dispatchKeyboardEvent('ArrowUp');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="33"]')
+    );
+    dispatchKeyboardEvent('ArrowRight');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="34"]')
+    );
+    dispatchKeyboardEvent('ArrowDown');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="44"]')
+    );
+  });
+
   describe('#renderBoard', () => {
     test('should append gameboard to parent', () => {
       const display = GameboardDisplay(10, 10);
