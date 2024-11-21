@@ -68,7 +68,7 @@ describe('gameboardDisplay', () => {
       display.renderBoard();
       const gameBoard = document.body.querySelector('.gameboard');
 
-      expect(gameBoard).not.toBeNull();
+      expect(Array.from(document.body.children).includes(gameBoard)).toBeTruthy();
     });
   });
 
