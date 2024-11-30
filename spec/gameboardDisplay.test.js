@@ -77,7 +77,7 @@ describe('gameboardDisplay', () => {
       const callback = jest.fn();
       const display = GameboardDisplay(10, 10);
       display.renderBoard();
-      display.addCallback('click', callback);
+      display.addCallback('click', 'myCallback', callback);
       const field = document.querySelector('[data-field="04"]');
       const anotherField = document.querySelector('[data-field="92"]');
 
@@ -94,7 +94,7 @@ describe('gameboardDisplay', () => {
       const callback = jest.fn();
       const display = GameboardDisplay(10, 10);
       display.renderBoard();
-      display.addCallback('click', callback);
+      display.addCallback('click', 'myCallback', callback);
       display.locked = true;
       const field = document.querySelector('[data-field="44"]');
 
@@ -108,13 +108,12 @@ describe('gameboardDisplay', () => {
       const callback = jest.fn();
       const display = GameboardDisplay(10, 10);
       display.renderBoard();
-      display.addCallback('click', callback);
-      const actual = display.removeCallback('click', callback);
+      display.addCallback('click', 'myCallback', callback);
+      display.removeCallback('click', 'myCallback');
       const field = document.querySelector('[data-field="89"]');
 
       field.click();
       expect(callback).not.toHaveBeenCalled();
-      expect(actual).toStrictEqual(callback);
     });
   });
 
