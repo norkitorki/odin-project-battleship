@@ -68,7 +68,27 @@ describe('gameboardDisplay', () => {
       display.renderBoard();
       const gameBoard = document.body.querySelector('.gameboard');
 
-      expect(Array.from(document.body.children).includes(gameBoard)).toBeTruthy();
+      expect(
+        Array.from(document.body.children).includes(gameBoard)
+      ).toBeTruthy();
+    });
+
+    test('should replace existing gameboard when replaceExisting is true', () => {
+      const display = GameboardDisplay(10, 10);
+      const displayTwo = GameboardDisplay(10, 10);
+      display.renderBoard();
+      displayTwo.renderBoard(document.body, true);
+
+      expect(document.body.querySelectorAll('.gameboard').length).toBe(1);
+    });
+
+    test('should append to parent when replaceExisting is false', () => {
+      const display = GameboardDisplay(10, 10);
+      const displayTwo = GameboardDisplay(10, 10);
+      display.renderBoard();
+      displayTwo.renderBoard(document.body, false);
+
+      expect(document.body.querySelectorAll('.gameboard').length).toBe(2);
     });
   });
 
