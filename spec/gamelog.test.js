@@ -54,6 +54,16 @@ describe('Gamelog', () => {
 
       expect(logItem.textContent).toBe(message);
     });
+
+    test('should allow message to be colored', () => {
+      const log = Gamelog('myGameLog');
+      log.renderLog();
+      const message = 'A colorful message';
+      log.addMessage(message, false, 'orange');
+      const logItem = document.querySelector('.myGameLog').firstElementChild;
+
+      expect(logItem.style.color).toBe('orange');
+    });
   });
 
   describe('#clear', () => {
