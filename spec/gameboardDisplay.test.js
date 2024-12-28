@@ -24,14 +24,14 @@ describe('gameboardDisplay', () => {
     expect(display.locked).toBe(false);
   });
 
-  test('should be traversible by keyboard arrow keys', () => {
+  test('should be traversible by keyboard', () => {
     const display = GameboardDisplay(10, 10, { keyboardTraverse: true });
     display.renderBoard();
     const gameBoard = document.querySelector('.gameboard');
     gameBoard.querySelector('[data-field="44"]').focus();
 
-    const dispatchKeyboardEvent = (key) => {
-      const event = new KeyboardEvent('keydown', { key });
+    const dispatchKeyboardEvent = (code) => {
+      const event = new KeyboardEvent('keydown', { code });
       gameBoard.dispatchEvent(event);
     };
 
@@ -48,6 +48,22 @@ describe('gameboardDisplay', () => {
       gameBoard.querySelector('[data-field="34"]')
     );
     dispatchKeyboardEvent('ArrowDown');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="44"]')
+    );
+    dispatchKeyboardEvent('KeyD');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="45"]')
+    );
+    dispatchKeyboardEvent('KeyS');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="55"]')
+    );
+    dispatchKeyboardEvent('KeyA');
+    expect(document.activeElement).toEqual(
+      gameBoard.querySelector('[data-field="54"]')
+    );
+    dispatchKeyboardEvent('KeyW');
     expect(document.activeElement).toEqual(
       gameBoard.querySelector('[data-field="44"]')
     );
