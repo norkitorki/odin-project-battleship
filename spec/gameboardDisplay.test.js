@@ -165,15 +165,15 @@ describe('gameboardDisplay', () => {
       expect(field.firstElementChild).toBe(element);
     });
 
-    test('should set style attribute of field', () => {
+    test('should set class attribute of field', () => {
       const display = GameboardDisplay(10, 10);
       const element = document.createElement('svg');
       display.renderBoard();
       const field = document.querySelector('[data-field="33"]');
-      const styles = 'background-color: blue;';
-      display.updateField(3, 3, element, styles);
+      const clazz = 'my-custom-class';
+      display.updateField(3, 3, element, clazz);
 
-      expect(field.getAttribute('style')).toBe(styles);
+      expect(field.classList.value).toBe(clazz);
     });
 
     test('should return when coordinates are out of range', () => {
