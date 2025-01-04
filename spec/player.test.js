@@ -19,23 +19,6 @@ describe('Player', () => {
     expect(player.gameboard).toStrictEqual(board);
   });
 
-  test('should have a targetDisplay property', () => {
-    const board = { rows: 10, columns: 10 };
-    const targetDisplay = { target: true };
-    const player = Player('Player1', board, targetDisplay);
-
-    expect(player.targetDisplay).toStrictEqual(targetDisplay);
-  });
-
-  test('should have a fleetDisplay property', () => {
-    const board = { rows: 10, columns: 10 };
-    const targetDisplay = { target: true };
-    const fleetDisplay = { bottom: true };
-    const player = Player('Player1', board, targetDisplay, fleetDisplay);
-
-    expect(player.fleetDisplay).toStrictEqual(fleetDisplay);
-  });
-
   test('should have a computerPlayer property', () => {
     const player = Player('NonCpuPlayer');
 
@@ -63,54 +46,89 @@ describe('Player', () => {
     });
   });
 
+  describe('#randomShipPlacement', () => {
+    const validCoordinates = (arr) => {
+      return arr.every((coordinates) => {
+        const [row, col] = coordinates;
+        return row >= 0 && row < 10 && col >= 0 && col < 10;
+      });
+    };
+
+    test('should place a ship at random coordinates', () => {
+      const board = {
+        rows: 10,
+        columns: 10,
+        placeShip: jest.fn((coordinates, ship) => {
+          if (!validCoordinates(coordinates)) throw new Error();
+          return ship;
+        }),
+      };
+      const player = Player('Player', board, {}, {});
+      const ship = { length: 3 };
+      const actual = player.randomShipPlacement(ship);
+
+      expect(validCoordinates(actual)).toBeTruthy();
+      expect(board.placeShip).toHaveBeenLastCalledWith(actual, ship);
+    });
+  });
+
   describe('computerPlayer', () => {
-    describe('#attack', () => {
-      test('should attack a random field', () => {
+    describe('#reset', () => {
+      test(`Should reset the computer's attack options`, () => {
         const board = {
+          rows: 5,
+          columns: 5,
+          makeAttack: jest.fn(() => true),
+        };
+
+        const cpu = Player('cpuPlayer', board, { computerPlayer: true });
+        const opponent = Player('Player', { rows: 5, columns: 5 });
+
+        for (let i = 0; i < 25; i++) {
+          cpu.attack(opponent);
+        }
+
+        expect(cpu.attack(opponent)).toBeNull();
+        cpu.reset();
+
+        for (let i = 0; i < 25; i++) {
+          expect(cpu.attack(opponent)).not.toBeNull();
+        }
+      });
+    });
+
+    describe('#attack', () => {
+      let board, cpu, opponent;
+
+      beforeEach(() => {
+        board = {
           rows: 10,
           columns: 10,
           makeAttack: jest.fn(() => true),
         };
-        const cpu = Player(
-          'cpuPlayer',
-          board,
-          {},
-          {},
-          { computerPlayer: true }
-        );
-        const opponent = Player('Player2', { rows: 10, columns: 10 });
+
+        cpu = Player('cpuPlayer', board, { computerPlayer: true });
+        opponent = Player('Player', { rows: 10, columns: 10 });
+      });
+
+      test('should attack a random field', () => {
         const actual = cpu.attack(opponent);
         const [row, col] = board.makeAttack.mock.calls[0];
 
-        expect(actual).toStrictEqual([row, col]);
+        expect(actual).toStrictEqual({
+          coordinates: [row, col],
+          attackResult: true,
+        });
         expect(board.makeAttack).toHaveBeenCalledTimes(1);
         expect(board.makeAttack).toHaveBeenCalledWith(
           row,
           col,
           opponent.gameboard
         );
-        expect(row >= 0 && row < 10).toBeTruthy();
-        expect(col >= 0 && col < 10).toBeTruthy();
+        expect(row >= 0 && row < 10 && col >= 0 && col < 10).toBeTruthy();
       });
 
       test('should attack adjacent fields if previous attack was a hit', () => {
-        const board = {
-          rows: 10,
-          columns: 10,
-          makeAttack: jest
-            .fn()
-            .mockReturnValueOnce(true)
-            .mockReturnValue(false),
-        };
-        const cpu = Player(
-          'cpuPlayer',
-          board,
-          {},
-          {},
-          { computerPlayer: true }
-        );
-        const opponent = Player('Player2', { rows: 10, columns: 10 });
-
         cpu.attack(opponent);
         const [lastRow, lastCol, _] = board.makeAttack.mock.calls[0];
         for (let i = 0; i < 5; i++) cpu.attack(opponent);
@@ -131,41 +149,12 @@ describe('Player', () => {
           })
         ).toBeTruthy();
       });
-    });
 
-    describe('#placeShip', () => {
-      test('should place ship at random coordinates on gameboard', () => {
-        const board = { rows: 10, columns: 10, placeShip: jest.fn() };
-        const ships = [{ length: 2 }, { length: 3 }, { length: 5 }];
-        const cpu = Player(
-          'cpuPlayer',
-          board,
-          {},
-          {},
-          { computerPlayer: true }
-        );
-
-        ships.forEach((ship) => cpu.placeShip(ship));
-        expect(board.placeShip).toHaveBeenCalledTimes(3);
-      });
-
-      test('should return ship coordinates of placed ship', () => {
-        const board = { rows: 10, columns: 10, placeShip: jest.fn() };
-        const ship = { length: 3 };
-        const cpu = Player(
-          'cpuPlayer',
-          board,
-          {},
-          {},
-          { computerPlayer: true }
-        );
-        const actual = cpu.placeShip(ship);
-
-        expect(Array.isArray(actual)).toBeTruthy();
-        expect(actual.length).toBe(3);
-        actual.forEach((coords) => {
-          expect(!isNaN(coords[0]) && !isNaN(coords[1])).toBeTruthy();
-        });
+      test('should return null if every field has been attacked once', () => {
+        for (let i = 0; i < 110; i++) {
+          let result = cpu.attack(opponent);
+          if (i > 99) expect(result).toBeNull();
+        }
       });
     });
   });
