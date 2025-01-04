@@ -20,6 +20,18 @@ describe('Gameboard', () => {
     expect(board.columns).toBe(8);
   });
 
+  test('should have a targetBoard property', () => {
+    const board = Gameboard(10, 10);
+
+    expect(board.targetBoard).toStrictEqual({});
+  });
+
+  test('should have a fleetBoard property', () => {
+    const board = Gameboard(10, 10);
+
+    expect(board.fleetBoard).toStrictEqual({});
+  });
+
   test('should have a hitCount property', () => {
     const board = Gameboard(10, 10);
 
@@ -49,8 +61,6 @@ describe('Gameboard', () => {
 
       expect(actual).toStrictEqual(ship);
       expect(board.shipCount).toBe(1);
-      expect(board.at(0, 4)).toStrictEqual(ship);
-      expect(board.at(1, 4)).toStrictEqual(ship);
     });
 
     test('should throw error if field is already occupied', () => {
@@ -78,6 +88,25 @@ describe('Gameboard', () => {
       ).toThrow();
 
       expect(board.shipCount).toBe(1);
+    });
+
+    test('should throw error when coordinates are not adjacent to each other', () => {
+      const board = Gameboard(10, 10);
+      const ship = { length: 2 };
+
+      expect(board.shipCount).toBe(0);
+
+      expect(() =>
+        board.placeShip(
+          [
+            [6, 6],
+            [2, 6],
+          ],
+          ship
+        )
+      ).toThrow();
+
+      expect(board.shipCount).toBe(0);
     });
 
     test('should throw error if coordinates are out of range', () => {
@@ -110,51 +139,35 @@ describe('Gameboard', () => {
     });
   });
 
-  describe('#at', () => {
-    test('should return ship', () => {
+  describe('#getShip', () => {
+    test('should return ship at coordinates', () => {
       const board = Gameboard(10, 10);
       const ship = { length: 2 };
       board.placeShip(
         [
-          [5, 0],
-          [4, 0],
+          [3, 3],
+          [3, 4],
         ],
         ship
       );
 
-      expect(board.at(5, 0)).toStrictEqual(ship);
-      expect(board.at(4, 0)).toStrictEqual(ship);
+      expect(board.getShip(3, 3)).toStrictEqual(ship);
+      expect(board.getShip(3, 4)).toStrictEqual(ship);
     });
 
-    test('should return undefined if field is empty or out of range', () => {
+    test('should return undefined if no ship is placed at coordinates', () => {
       const board = Gameboard(10, 10);
-
-      expect(board.at(0, 5)).toBeUndefined();
-      expect(board.at(100, 4)).toBeUndefined();
-      expect(board.at(7, 3442)).toBeUndefined();
-      expect(board.at(-223, -5)).toBeUndefined();
-    });
-
-    test('should return true if ship has been hit', () => {
-      const board = Gameboard(10, 10);
-      const ship = { hit: jest.fn(), isSunk: jest.fn() };
+      const ship = { length: 2 };
       board.placeShip(
         [
-          [0, 0],
-          [0, 1],
+          [3, 3],
+          [3, 4],
         ],
         ship
       );
-      board.receiveAttack(0, 1);
 
-      expect(board.at(0, 1)).toBe(true);
-    });
-
-    test('should return false if no ship has been hit', () => {
-      const board = Gameboard(10, 10);
-      board.receiveAttack(2, 2);
-
-      expect(board.at(2, 2)).toBe(false);
+      expect(board.getShip(5, 5)).toBeUndefined();
+      expect(board.getShip(5, 6)).toBeUndefined();
     });
   });
 
@@ -172,26 +185,20 @@ describe('Gameboard', () => {
 
       expect(board.hitCount).toBe(0);
       expect(board.missCount).toBe(0);
-      expect(board.receiveAttack(0, 9)).toBe(ship);
+      expect(board.receiveAttack(0, 9)).toStrictEqual(ship);
       expect(ship.hit).toHaveBeenCalledTimes(1);
       expect(board.hitCount).toBe(1);
       expect(board.missCount).toBe(0);
-      expect(board.at(0, 9)).toBe(true);
+      expect(board.fleetBoard[[0, 9]]).toBe(true);
     });
 
     test('should reduce shipCount when ship is sunk', () => {
       const board = Gameboard(10, 10);
-      const ship = { length: 2, hit: jest.fn(), isSunk: jest.fn(() => true) };
-      board.placeShip(
-        [
-          [0, 2],
-          [1, 2],
-        ],
-        ship
-      );
+      const ship = { length: 1, hit: jest.fn(), isSunk: jest.fn(() => true) };
+      board.placeShip([[0, 2]], ship);
 
       expect(board.shipCount).toBe(1);
-      expect(board.receiveAttack(0, 2)).toBe(ship);
+      board.receiveAttack(0, 2);
       expect(board.shipCount).toBe(0);
     });
 
@@ -203,7 +210,6 @@ describe('Gameboard', () => {
       expect(board.receiveAttack(2, 2)).toBe(false);
       expect(board.hitCount).toBe(0);
       expect(board.missCount).toBe(1);
-      expect(board.at(2, 2)).toBe(false);
     });
 
     test('should work with subsequent attacks', () => {
@@ -221,19 +227,81 @@ describe('Gameboard', () => {
       expect(board.missCount).toBe(0);
       expect(board.receiveAttack(5, 5)).toBe(false);
       expect(board.receiveAttack(5, 5)).toBe(false);
-      expect(board.receiveAttack(4, 4)).toBe(ship);
+      expect(board.receiveAttack(4, 4)).toStrictEqual(ship);
       expect(board.receiveAttack(4, 4)).toBe(true);
       expect(board.hitCount).toBe(1);
       expect(board.missCount).toBe(1);
-      expect(board.at(5, 5)).toBe(false);
-      expect(board.at(4, 4)).toBe(true);
+      expect(board.fleetBoard[[5, 5]]).toBe(false);
+      expect(board.fleetBoard[[4, 4]]).toBe(true);
     });
 
     test('should not register attacks out of range', () => {
       const board = Gameboard(10, 10);
       board.receiveAttack(-100, 15);
 
-      expect(board.at(-100, 15)).toBeUndefined();
+      expect(board.targetBoard[[-100, 15]]).toBeUndefined();
+      expect(board.fleetBoard[[-100, 15]]).toBeUndefined();
+    });
+  });
+
+  describe('#makeAttack', () => {
+    test('should return ship if a ship was hit', () => {
+      const board = Gameboard(10, 10);
+      const opponentBoard = Gameboard(10, 10);
+      const ship = { length: 2, hit: jest.fn(), isSunk: jest.fn() };
+      opponentBoard.placeShip(
+        [
+          [5, 1],
+          [4, 1],
+        ],
+        ship
+      );
+
+      expect(board.makeAttack(5, 1, opponentBoard)).toStrictEqual(ship);
+      expect(board.makeAttack(4, 1, opponentBoard)).toStrictEqual(ship);
+    });
+
+    test('should return false if no ship was hit', () => {
+      const board = Gameboard(10, 10);
+      const opponentBoard = Gameboard(10, 10);
+      const ship = { length: 2, hit: jest.fn(), isSunk: jest.fn() };
+      opponentBoard.placeShip(
+        [
+          [8, 4],
+          [8, 5],
+        ],
+        ship
+      );
+
+      expect(board.makeAttack(4, 8, opponentBoard)).toBe(false);
+    });
+
+    test(`should register attack on opponent's board`, () => {
+      const board = Gameboard(10, 10);
+      const opponentBoard = Gameboard(10, 10);
+      jest.spyOn(opponentBoard, 'receiveAttack');
+      board.makeAttack(0, 2, opponentBoard);
+
+      expect(opponentBoard.receiveAttack).toHaveBeenCalledTimes(1);
+      expect(opponentBoard.receiveAttack).toHaveBeenCalledWith(0, 2);
+    });
+
+    test('should register attack on target board', () => {
+      const board = Gameboard(10, 10);
+      const opponentBoard = Gameboard(10, 10);
+      const ship = { length: 2, hit: jest.fn(), isSunk: jest.fn() };
+      opponentBoard.placeShip(
+        [
+          [7, 7],
+          [6, 7],
+        ],
+        ship
+      );
+      board.makeAttack(7, 7, opponentBoard);
+      board.makeAttack(2, 2, opponentBoard);
+
+      expect(board.targetBoard[[7, 7]]).toBe(true);
+      expect(board.targetBoard[[2, 2]]).toBe(false);
     });
   });
 
@@ -258,6 +326,32 @@ describe('Gameboard', () => {
 
       expect(board.shipCount).toBe(1);
       expect(board.allShipsSunk()).toBeFalsy();
+    });
+  });
+
+  describe('#clear', () => {
+    test('should clear the gameboard', () => {
+      const board = Gameboard(10, 10);
+      const ship = { length: 2, hit: jest.fn(), isSunk: jest.fn() };
+      board.placeShip(
+        [
+          [2, 4],
+          [2, 5],
+        ],
+        ship
+      );
+      board.receiveAttack(9, 7);
+      board.receiveAttack(2, 5);
+
+      expect(board.shipCount).toBe(1);
+      expect(board.hitCount).toBe(1);
+      expect(board.missCount).toBe(1);
+      expect(Object.keys(board.fleetBoard).length).toBe(3);
+      board.clear();
+      expect(board.shipCount).toBe(0);
+      expect(board.hitCount).toBe(0);
+      expect(board.missCount).toBe(0);
+      expect(Object.keys(board.fleetBoard).length).toBe(0);
     });
   });
 });
