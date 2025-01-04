@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Odin Project: Battleship</title>
+    <link rel="stylesheet" href="dist/main.css" />
+    <script src="dist/main.js" defer></script>
+  </head>
+  <body>
+    <div class="game-controls">
+      <button id="resetGame">Reset Game</button>
+
+      <label for="computerPlay">
+        Play against Computer
+        <input type="checkbox" name="computerPlay" id="computerPlay" />
+      </label>
+
+      <label for="hideLog">
+        Hide Log
+        <input type="checkbox" name="hideLog" id="hideLog" />
+      </label>
+
+      <label for="fleetToggle" id="fleetToggleLabel" class="hidden">
+        Show Fleet Board
+        <input type="checkbox" name="fleetToggle" id="fleetToggle" />
+      </label>
+    </div>
+
+    <div class="gameContainer">
+      <h1>
+        <span class="playerHeader"></span>
+        <div class="playerColor"></div>
+      </h1>
+      <div class="shipPlacementActions hidden">
+        <button id="randomPlacement">Place ships randomly</button>
+        <button id="horizontalPlacement" data-direction="h">Horizontal</button>
+        <button id="verticalPlacement" data-direction="v">Vertical</button>
+      </div>
+      <div class="boards">
+        <div id="logContainer"></div>
+        <section>
+          <h2 class="targetHeader">Target Board</h2>
+          <div id="targetBoard"></div>
+        </section>
+        <section>
+          <h2>Fleet Board</h2>
+          <div id="fleetBoard"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="opponentContainer"></div>
+
+    <template id="peg">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <title>peg</title>
+        <path
+          d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+        />
+      </svg>
+    </template>
+
+    <template id="emptiness"></template>
+  </body>
+</html>
