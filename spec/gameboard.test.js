@@ -22,14 +22,34 @@ describe('Gameboard', () => {
 
   test('should have a targetBoard property', () => {
     const board = Gameboard(10, 10);
+    const opponentBoard = Gameboard(10, 10);
+    const ship = { length: 2, hit: jest.fn(), isSunk: jest.fn() };
+    opponentBoard.placeShip(
+      [
+        [0, 0],
+        [0, 1],
+      ],
+      ship
+    );
 
-    expect(board.targetBoard).toStrictEqual({});
+    board.makeAttack(0, 0, opponentBoard);
+    board.makeAttack(9, 2, opponentBoard);
+
+    expect(board.targetBoard).toStrictEqual({ '0,0': true, '9,2': false });
   });
 
   test('should have a fleetBoard property', () => {
     const board = Gameboard(10, 10);
+    const ship = { length: 2 };
+    board.placeShip(
+      [
+        [0, 0],
+        [0, 1],
+      ],
+      ship
+    );
 
-    expect(board.fleetBoard).toStrictEqual({});
+    expect(board.fleetBoard).toStrictEqual({ '0,0': 1, '0,1': 1 });
   });
 
   test('should have a hitCount property', () => {
