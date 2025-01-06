@@ -52,6 +52,12 @@ describe('Gameboard', () => {
     expect(board.fleetBoard).toStrictEqual({ '0,0': 1, '0,1': 1 });
   });
 
+  test('should have a shipCount property', () => {
+    const board = Gameboard(10, 10);
+
+    expect(board.shipCount).toBe(0);
+  });
+
   test('should have a hitCount property', () => {
     const board = Gameboard(10, 10);
 
