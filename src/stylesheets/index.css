@@ -1,0 +1,182 @@
+:root {
+  --main-bg-color: #01112e;
+}
+
+body {
+  background-color: var(--main-bg-color);
+  color: #ffffff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  text-align: center;
+  font-weight: bold;
+  font-size: 2.5rem;
+  margin: 0.7rem;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 1.4rem;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+label {
+  font-weight: bold;
+}
+
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.game-controls > button,
+.shipPlacementActions > button {
+  display: inline-block;
+  padding: 0.6rem 0.4rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.playerColor {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+.shipPlacementActions {
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.shipPlacementActions > button {
+  transition: all 0.3s ease;
+}
+
+.activeDirection {
+  background-color: #063ea5;
+  color: #ffffff;
+}
+
+.componentHeader {
+  display: none;
+}
+
+.componentHeader:has(+ .logContainer:not(.hidden)),
+.componentHeader:has(+ .targetBoard:not(.hidden)),
+.componentHeader:has(+ .fleetBoard:not(.hidden)) {
+  display: block;
+}
+
+.logContainer {
+  text-align: center;
+  font-weight: bold;
+  padding: 1rem;
+  width: 400px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+.targetBoard {
+  height: 500px;
+  width: 500px;
+}
+
+.fleetBoard {
+  width: 400px;
+  height: 400px;
+}
+
+.targetBoard .highlighted,
+.fleetBoard .highlighted {
+  background-color: var(--main-bg-color);
+  outline: 1px solid #ffffff;
+}
+
+.gameLog > li {
+  margin: 0.7rem;
+}
+
+.gameContainer,
+.opponentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.opponentContainer {
+  margin-top: 1rem;
+}
+
+.gameContainer > .gameComponents,
+.opponentContainer > .gameComponents {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.gameboard > button {
+  transition: all 0.5s ease;
+}
+
+.gameboard > button:hover,
+.gameboard > button:focus {
+  background-color: var(--main-bg-color);
+  outline: 1px solid #ffffff;
+}
+
+.cyanPeg {
+  background-color: var(--main-bg-color);
+  fill: #00dada;
+}
+
+.redPeg {
+  background-color: var(--main-bg-color);
+  fill: #ff0000;
+}
+
+.whitePeg {
+  background-color: var(--main-bg-color);
+  fill: #ffffff;
+}
+
+.hidden {
+  display: none;
+}
+
+@media screen and (max-width: 500px) {
+  .gameContainer,
+  .opponentContainer {
+    gap: 1rem;
+  }
+
+  .logContainer {
+    width: auto;
+    max-height: 200px;
+    text-align: center;
+  }
+
+  .targetBoard {
+    height: 380px;
+    width: 380px;
+  }
+
+  .fleetBoard {
+    width: 300px;
+    height: 300px;
+  }
+}
