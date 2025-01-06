@@ -52,6 +52,27 @@ describe('Gameboard', () => {
     expect(board.fleetBoard).toStrictEqual({ '0,0': 1, '0,1': 1 });
   });
 
+  test('should have a shipPlacements property', () => {
+    const board = Gameboard(10, 10);
+    const ship = { length: 3 };
+    board.placeShip(
+      [
+        [5, 2],
+        [6, 2],
+        [7, 2],
+      ],
+      ship
+    );
+
+    expect(board.shipPlacements).toStrictEqual([
+      [
+        [5, 2],
+        [6, 2],
+        [7, 2],
+      ],
+    ]);
+  });
+
   test('should have a shipCount property', () => {
     const board = Gameboard(10, 10);
 
