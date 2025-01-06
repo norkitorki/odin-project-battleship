@@ -85,9 +85,7 @@ const setShipDirection = (event) => {
 };
 
 const shipPlacementMessage = (ship) => {
-  if (ship) {
-    gameLog.addMessage(`Now placing Ship of length: ${ship.length}`, false);
-  }
+  gameLog.addMessage(`Now placing Ship of length: ${ship.length}`, false);
 };
 
 const displayShips = (display, coordinates) => {
@@ -128,12 +126,13 @@ const userShipPlacement = () => {
     try {
       currentPlayer.gameboard.placeShip(coordinates, ship);
       displayShips(display, coordinates);
-      coordinates = [];
       ship = ships[++shipIndex];
-      shipPlacementMessage(ship);
       if (shipIndex >= ships.length) {
         gameLog.clear();
         userPlacement.resolve(currentPlayer.gameboard.shipPlacements);
+      } else {
+        coordinates = [];
+        shipPlacementMessage(ship);
       }
     } catch (error) {
       gameLog.addMessage(error.message, false, 'red');
