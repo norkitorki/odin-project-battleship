@@ -154,53 +154,69 @@ describe('gameboardDisplay', () => {
   });
 
   describe('#updateField', () => {
-    test('should append element to the field', () => {
+    test('should append template content to field', () => {
       const display = GameboardDisplay(10, 10);
-      const element = document.createElement('svg');
-      display.renderBoard();
-      const field = document.querySelector('[data-field="55"]');
-      const actual = display.updateField(5, 5, element);
 
-      expect(actual).toBe(element);
-      expect(field.firstElementChild).toBe(element);
+      const svg = document.createElement('svg');
+      svg.classList.add('my-peg');
+      document.body.innerHTML = `<template id="peg-template">${svg.outerHTML}</template>`;
+      display.renderBoard();
+      display.updateField(5, 5, 'peg-template');
+      const field = document.querySelector('[data-field="55"]');
+
+      expect(field.firstElementChild.outerHTML).toBe(svg.outerHTML);
     });
 
     test('should set class attribute of field', () => {
       const display = GameboardDisplay(10, 10);
-      const element = document.createElement('svg');
-      display.renderBoard();
-      const field = document.querySelector('[data-field="33"]');
+
       const clazz = 'my-custom-class';
-      display.updateField(3, 3, element, clazz);
+      const svg = document.createElement('svg');
+      svg.classList.add('my-peg');
+      document.body.innerHTML = `<template id="peg-template">${svg.outerHTML}</template>`;
+      display.renderBoard();
+      display.updateField(3, 3, 'peg-template', clazz);
+      const field = document.querySelector('[data-field="33"]');
 
       expect(field.classList.value).toBe(clazz);
     });
 
     test('should return when coordinates are out of range', () => {
       const display = GameboardDisplay(10, 10);
-      const element = document.createElement('svg');
-      display.renderBoard();
-      const board = document.querySelector('.gameboard');
-      const actual = display.updateField(12, 5, element);
 
-      expect(actual).toBeUndefined();
+      const svg = document.createElement('svg');
+      svg.classList.add('my-peg');
+      document.body.innerHTML = `<template id="peg-template">${svg.outerHTML}</template>`;
+      display.renderBoard();
+
+      const board = document.querySelector('.gameboard');
+      display.updateField(12, 5, 'peg-template');
+
       expect(board.querySelector('svg')).toBeNull();
     });
 
     test('should return when coordinates are omitted', () => {
       const display = GameboardDisplay(10, 10);
-      const element = document.createElement('svg');
-      display.renderBoard();
-      const board = document.querySelector('.gameboard');
-      const actual = display.updateField(undefined, undefined, element);
 
-      expect(actual).toBeUndefined();
+      const svg = document.createElement('svg');
+      svg.classList.add('my-peg');
+      document.body.innerHTML = `<template id="peg-template">${svg.outerHTML}</template>`;
+      display.renderBoard();
+
+      const board = document.querySelector('.gameboard');
+      display.updateField(null, null, 'peg-template');
+
       expect(board.querySelector('svg')).toBeNull();
     });
 
-    test('should return when element is omitted', () => {
+    test('should return when templateId is omitted', () => {
       const display = GameboardDisplay(10, 10);
+
+      const svg = document.createElement('svg');
+      svg.classList.add('my-peg');
+      document.body.innerHTML = `<template id="peg-template">${svg.outerHTML}</template>`;
       display.renderBoard();
+
       const field = document.querySelector('[data-field="55"]');
       const actual = display.updateField(5, 5);
 
