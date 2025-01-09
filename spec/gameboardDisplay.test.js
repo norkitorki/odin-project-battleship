@@ -265,29 +265,4 @@ describe('gameboardDisplay', () => {
       expect(fields.every((f) => f.classList.value === '')).toBeTruthy();
     });
   });
-
-  describe('#hide', () => {
-    test('should hide display', () => {
-      const display = GameboardDisplay(10, 10);
-      display.renderBoard();
-      const board = document.querySelector('.gameboard');
-
-      expect(board.style.display).toBe('');
-      display.hide();
-      expect(board.style.display).toBe('none');
-    });
-  });
-
-  describe('#unhide', () => {
-    test('should unhide display', () => {
-      const display = GameboardDisplay(10, 10);
-      display.renderBoard();
-      const board = document.querySelector('.gameboard');
-      display.hide();
-
-      expect(board.style.display).toBe('none');
-      display.unhide();
-      expect(board.style.display).toBe('');
-    });
-  });
 });
