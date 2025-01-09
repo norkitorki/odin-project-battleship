@@ -265,4 +265,32 @@ describe('gameboardDisplay', () => {
       expect(fields.every((f) => f.classList.value === '')).toBeTruthy();
     });
   });
+
+  describe('#clear', () => {
+    test('should clear fields', () => {
+      const display = GameboardDisplay(10, 10);
+      display.renderBoard();
+      const container = document.querySelector('.gameboard');
+
+      const fields = [
+        container.querySelector('[data-field="02"]'),
+        container.querySelector('[data-field="03"]'),
+        container.querySelector('[data-field="04"]'),
+        container.querySelector('[data-field="05"]'),
+        container.querySelector('[data-field="06"]'),
+      ];
+
+      fields.forEach((field, i) => {
+        field.classList.add('field-class');
+        const div = document.createElement('div');
+        div.textContent = i;
+        field.appendChild(div);
+      });
+
+      expect(container.querySelectorAll('.field-class').length).toBe(5);
+      display.clear();
+      expect(container.querySelectorAll('.field-class').length).toBe(0);
+      expect(fields.every((field) => field.textContent === '')).toBeTruthy();
+    });
+  });
 });
