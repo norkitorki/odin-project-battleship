@@ -292,5 +292,35 @@ describe('gameboardDisplay', () => {
       expect(container.querySelectorAll('.field-class').length).toBe(0);
       expect(fields.every((field) => field.textContent === '')).toBeTruthy();
     });
+
+    test('should remove callbacks if removeCallbacks is true', () => {
+      const display = GameboardDisplay(10, 10);
+      display.renderBoard();
+      const field = document.querySelector('[data-field="85"]');
+      const clickCallback = jest.fn();
+
+      display.addCallback('click', 'clickCb', clickCallback);
+
+      field.click();
+      display.clear(true);
+      field.click();
+
+      expect(clickCallback).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not remove callbacks if removeCallbacks is false', () => {
+      const display = GameboardDisplay(10, 10);
+      display.renderBoard();
+      const field = document.querySelector('[data-field="85"]');
+      const clickCallback = jest.fn();
+
+      display.addCallback('click', 'clickCb', clickCallback);
+
+      field.click();
+      display.clear();
+      field.click();
+
+      expect(clickCallback).toHaveBeenCalledTimes(2);
+    });
   });
 });
