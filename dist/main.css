@@ -66,18 +66,26 @@ body {
   align-items: center;
 }
 
+header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
 h1 {
   text-align: center;
   font-weight: bold;
   font-size: 2.5rem;
-  margin: 0.7rem;
 }
 
 h2 {
   font-weight: bold;
   font-size: 1.4rem;
   text-align: center;
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem;
 }
 
 label {
@@ -107,7 +115,7 @@ label {
 }
 
 .shipPlacementActions {
-  padding: 1rem 0;
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,25 +131,13 @@ label {
   color: #ffffff;
 }
 
-.componentHeader {
+.boardHeader {
   display: none;
 }
 
-.componentHeader:has(+ .logContainer:not(.hidden)),
-.componentHeader:has(+ .targetBoard:not(.hidden)),
-.componentHeader:has(+ .fleetBoard:not(.hidden)) {
+.boardHeader:has(+ .targetBoard > .gameboard:not(.hidden)),
+.boardHeader:has(+ .fleetBoard:not(.hidden)) {
   display: block;
-}
-
-.logContainer {
-  text-align: center;
-  font-weight: bold;
-  padding: 1rem;
-  width: 400px;
-  max-height: 300px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scroll-behavior: smooth;
 }
 
 .targetBoard {
@@ -161,27 +157,45 @@ label {
 }
 
 .gameLog > li {
-  margin: 0.7rem;
+  margin: 1rem;
 }
 
-.gameContainer,
-.opponentContainer {
+.gameContainer {
+  position: relative;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-}
-
-.opponentContainer {
-  margin-top: 1rem;
-}
-
-.gameContainer > .gameComponents,
-.opponentContainer > .gameComponents {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.gameContainer > .logContainer {
+  text-align: center;
+  font-weight: bold;
+  max-height: 500px;
+  width: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff var(--main-bg-color);
+  scroll-behavior: smooth;
+}
+
+.gameContainer > .playerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.gameContainer > .winningPlayer {
+  border: 2px solid #ce09ce;
+  padding: 1rem;
+}
+
+.gameContainer:has(> .winningPlayer) {
+  flex-direction: column;
 }
 
 .gameboard > button {
@@ -210,19 +224,26 @@ label {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-@media screen and (max-width: 500px) {
-  .gameContainer,
-  .opponentContainer {
+@media screen and (max-width: 900px) {
+  header {
+    margin-bottom: 2rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .gameContainer > .playerContainer {
     gap: 1rem;
   }
 
-  .logContainer {
+  .gameContainer > .logContainer {
     width: auto;
     max-height: 200px;
-    text-align: center;
   }
 
   .targetBoard {

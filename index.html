@@ -8,21 +8,34 @@
     <script src="dist/main.js" defer></script>
   </head>
   <body>
-    <div class="game-controls">
-      <button id="resetGame">Reset Game</button>
-      <label for="computerPlay">
-        Play against Computer
-        <input type="checkbox" name="computerPlay" id="computerPlay" />
-      </label>
-      <label for="hideLog">
-        Hide Game Log
-        <input type="checkbox" name="hideLog" id="hideLog" />
-      </label>
-      <label for="fleetToggle" id="fleetToggleLabel" class="hidden">
-        Hide Fleet Board
-        <input type="checkbox" name="fleetToggle" id="fleetToggle" checked />
-      </label>
-    </div>
+    <header>
+      <h1 class="playerHeader">
+        <div class="playerColor"></div>
+        <span class="playerName"></span>
+      </h1>
+
+      <div class="shipPlacementActions hidden">
+        <button id="randomPlacement">Place ships randomly</button>
+        <button id="horizontalPlacement" data-direction="h">Horizontal</button>
+        <button id="verticalPlacement" data-direction="v">Vertical</button>
+      </div>
+
+      <div class="game-controls">
+        <button id="resetGame">Reset Game</button>
+        <label for="computerPlay">
+          Play against Computer
+          <input type="checkbox" name="computerPlay" id="computerPlay" />
+        </label>
+        <label for="hideLog">
+          Hide Game Log
+          <input type="checkbox" name="hideLog" id="hideLog" />
+        </label>
+        <label for="fleetToggle" id="fleetToggleLabel">
+          Hide Fleet Board
+          <input type="checkbox" name="fleetToggle" id="fleetToggle" checked />
+        </label>
+      </div>
+    </header>
 
     <noscript>
       The game requires JavaScript. Please consider enabling it in your browser
@@ -30,29 +43,7 @@
     </noscript>
 
     <div class="gameContainer">
-      <h1 class="playerHeader">
-        <div class="playerColor"></div>
-        <span class="playerName"></span>
-      </h1>
-      <div class="shipPlacementActions hidden">
-        <button id="randomPlacement">Place ships randomly</button>
-        <button id="horizontalPlacement" data-direction="h">Horizontal</button>
-        <button id="verticalPlacement" data-direction="v">Vertical</button>
-      </div>
-      <div class="gameComponents">
-        <section>
-          <h2 class="componentHeader">Game Log</h2>
-          <div class="logContainer"></div>
-        </section>
-        <section>
-          <h2 class="componentHeader">Target Board</h2>
-          <div class="targetBoard"></div>
-        </section>
-        <section>
-          <h2 class="componentHeader">Fleet Board</h2>
-          <div class="fleetBoard hidden"></div>
-        </section>
-      </div>
+      <div class="logContainer"></div>
     </div>
 
     <template id="pegTemplate">
