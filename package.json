@@ -2,6 +2,7 @@
   "name": "odin-project-project-battleship",
   "version": "1.0.0",
   "scripts": {
+    "build": "webpack",
     "watch": "webpack --watch",
     "test": "jest --roots spec/"
   },
